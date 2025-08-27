@@ -23,3 +23,6 @@ plt.ylabel("Y-akse")
 plt.show()
 
 
+import numpy as np 
+
+print(np.pi)
