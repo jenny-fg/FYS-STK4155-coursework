@@ -18,11 +18,6 @@ def polynomial_features(x, p):
 def OLS_parameters(X, y):
     return np.linalg.inv(X.T @ X) @ X.T @ y
 
-def train(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=73)
-    return X_train, X_test, y_train, y_test
-
 def MSE(X_train, X_test, y_train, y_test):
     beta_train = OLS_parameters(X_train, y_train)
     
@@ -42,16 +37,13 @@ for p in range(2, 11):
     X_train = polynomial_features(x_train, p)
     X_test  = polynomial_features(x_test,  p)
 
-    beta = OLS_parameters(X_train, y_train)
+    mse_train, mse_test = MSE(X_train, X_test, y_train, y_test)
 
-    yhat_tr = X_train @ beta
-    yhat_te = X_test  @ beta
-
-    mses_train.append(np.mean((y_train - yhat_tr)**2))
-    mses_test.append(np.mean((y_test  - yhat_te)**2))
+    mses_train.append(mse_train)
+    mses_test.append(mse_test)
     degrees.append(p)
-    ...
-    print(f"Degree {p}: MSE train = {mses_train[-1]:.4f}, MSE test = {mses_test[-1]:.4f}")
+
+    print(f"Degree {p}: MSE train = {mse_train:.4f}, MSE test = {mse_test:.4f}")
 
 
 
@@ -60,10 +52,8 @@ plt.plot(degrees, mses_train, marker='o', label='Train MSE')
 plt.plot(degrees, mses_test,  marker='o', label='Test MSE')
 plt.xlabel('Polynomial degree')
 plt.ylabel('MSE')
-plt.xticks(degrees)       # grader som heltall på x-aksen
+plt.xticks(degrees)
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.show()
-# evt. lagre
-# plt.savefig('mse_vs_degree.png', dpi=150)
